@@ -1,6 +1,9 @@
 # Readme file for this project
 
+--------
+
 ## Project Requitement
+
 Development of a Containerized Audio Processing API Using Python Objective:
 
 To develop a user-facing, containerized API for audio file processing with features for uploading, downloading, and volume adjustment. 
@@ -63,12 +66,62 @@ Submit a Git repository link containing all deliverables.
 Ensure the repository includes the Dockerfile, API code, OpenAPI specification, tests, and README.
 
 
-## Structure
+-------
 
-## Deployment
+## Guide from author
 
-## TODO
+### Structure
+ai-coustics
 
-1. oauth
-2. https
-3. video support
+  - api                     
+    - audio.py            api route for audio upload/download/list/adjust volume
+    - user.py             api route for user create/login
+
+  - model
+    - database.py         method for database connection and tools related to database
+    - models.py           sqlalchemy models
+    - schemas.py          pydantic models, not in use
+  
+  - utils
+    - audio_utils.py      method for audio volume adjust and tools related to audio
+    - user_utils.py       method for about encrypt and token
+    - general_utils.py    other method
+
+  - test                  thst file for this project
+  - logs                  logs folder, empty while not running
+  - storage               audio file storage path, you can put this path out of container
+  - temp                  path for temp file, should be empty all time
+
+  - main.py               entrance of this project
+  - config.py             config file of this project
+  - requirements.txt      
+  - Dockerfile
+  
+
+### Deployment
+
+```bash
+cd ai-coustics
+mkdir storage
+docker build -t audio_backend:v1 -f ./Dockerfile .
+docker run -itd --name backend -p 8000:8000 -v ./storage:/backend/storage audio_backend:v1
+```
+
+### Use
+
+open browser, typing:
+http://127.0.0.1:8000/docs#
+
+- /api/user/create      create user
+- /api/user/login       login and get a fake token for other request
+- /api/audio/upload     use token upload a audio file 
+- /api/audio/list       all audio file for one user, can get the request_id of each file
+- /api/audio/download   audio file by given request_id of the audio file
+- /api/audio/volume     adjust audio volume and download by given request_id volume, volume could be positive and negetive
+- /ping                 health check
+
+### TODO
+
+- test case fillup
+- response code fillup
+- fake token into real token

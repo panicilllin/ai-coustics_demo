@@ -38,16 +38,14 @@ def check_file_md5(file_path: str, md5: str) -> bool:
 
 
 def generate_store_path(file_name: str) -> str:
-    if not os.path.exists(config_audio_path):
-        os.mkdir(config_audio_path)
+    os.makedirs(config_audio_path, exist_ok=True)
     store_name = str(uuid.uuid4()) + '.' + file_name.split('.')[-1]
     store_path = os.path.join(config_audio_path, store_name)
     return store_path
 
 
 def generate_temp_path(file_name: str) -> str:
-    if not os.path.exists(config_temp_path):
-        os.mkdir(config_temp_path)
+    os.makedirs(config_audio_path, exist_ok=True)
     temp_path = mkdtemp(dir=config_temp_path)
     temp_path = os.path.join(temp_path, file_name)
     return temp_path

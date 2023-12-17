@@ -1,0 +1,9 @@
+.idea/
+__pycache__
+logs
+storage
+temp
+.git
+.DS_Store
+audio.db
+*.pdf

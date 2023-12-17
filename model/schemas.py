@@ -26,5 +26,5 @@ class Audio(BaseModel):
     file_path: str
     file_md5: str  # check md5 to reduce duplicate files
     file_type: AudioType
-    user_id: User.user_id  # user who upload this file
+    user_id: User  # user who upload this file
     create_time: datetime

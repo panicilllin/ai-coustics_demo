@@ -1,0 +1,11 @@
+.idea/
+__pycache__
+logs
+storage
+temp
+.git
+test/.pytest_cache
+.DS_Store
+audio.db
+*.pdf
+

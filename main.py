@@ -1,8 +1,10 @@
 import datetime
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from config import config_log_path
 from model import models
 from model.database import get_db_engine
 from api import user, audio
@@ -35,8 +37,9 @@ models.Base.metadata.create_all(bind=db_engine.engine)
 # Set Log
 
 # set log config
+os.makedirs(config_log_path, exist_ok=True)
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='logs/backend.log',
+logging.basicConfig(filename=os.path.join(config_log_path, 'backend.log'),
                     level=logging.INFO,
                     format='%(asctime)s %(name)s[line:%(lineno)d] %(levelname)s: %(message)s'
                     )
