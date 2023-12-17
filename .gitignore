@@ -6,6 +6,6 @@ temp
 .git
 test/.pytest_cache
 .DS_Store
-audio.db
 *.pdf
+*.db
 

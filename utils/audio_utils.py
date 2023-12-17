@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 class AudioType(str, Enum):
-
     mp3 = "mp3"
     flac = "flac"
     wav = "wav"
@@ -50,6 +49,11 @@ class AudioEngine(metaclass=abc.ABCMeta):
 
     def adjust_volume(self, volume: int):
         pass
+
+    @property
+    def dbfs(self) -> AudioSegment.dBFS:
+        audio = AudioSegment.from_file(self.file_path)
+        return audio.dBFS
 
 
 class MP3Engine(AudioEngine):
@@ -102,7 +106,7 @@ class WAVEngine(AudioEngine):
 
 # ---------
 
-def get_audio_engine(file_path: str) -> AudioEngine or None:
+def get_audio_engine(file_path: str) -> AudioEngine:
     _cls = AudioEngine(file_path)
     _scls = _cls.SUBCLASSES.get(AudioType(_cls.file_type), None)
     if not _scls:
@@ -112,6 +116,4 @@ def get_audio_engine(file_path: str) -> AudioEngine or None:
 
 
 if __name__ == "__main__":
-    logger.info("-------")
-    cls = get_audio_engine('test./02. Rain.flac')
-    logger.info(cls)
+    pass

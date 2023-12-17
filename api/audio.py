@@ -71,7 +71,10 @@ async def upload(token: str = None, file: UploadFile = File(...), db: Session = 
         return {"message": f"Error occured wile uploading {e}"}
     finally:
         file.file.close()
-    return {"message": f"Upload file {file.filename} success, id={audio_record.id}"}
+    return {"message": f"Upload file {file.filename} success",
+            "request_id": audio_record.id,
+            "md5": audio_record.file_md5
+            }
 
 
 @router.get("/list")
@@ -96,16 +99,16 @@ async def list_audio(token: str = None, db: Session = Depends(db_engine.get_db))
 
 
 @router.get("/download")
-async def download(token: str = None, file_id: int = None, db: Session = Depends(db_engine.get_db)):
+async def download(token: str = None, request_id: int = None, db: Session = Depends(db_engine.get_db)):
     # check user auth
     c_token = FakeToken()
     user = await c_token.reveal_token(token)
     if not user:
         raise HTTPException(status_code=400, detail="token not valid")
     # check record
-    audio_record = db.query(models.Audio).filter(models.Audio.id == file_id).first()
+    audio_record = db.query(models.Audio).filter(models.Audio.id == request_id).first()
     if not audio_record:
-        return {"message": f"can't find file by given id{file_id}"}
+        return {"message": f"can't find file by given id{request_id}"}
     # check user privilege
     if audio_record.user_id != user.id:
         return {"message": f"current user can't access this file"}
@@ -119,16 +122,17 @@ async def download(token: str = None, file_id: int = None, db: Session = Depends
 
 
 @router.get("/volume")
-async def volume(token: str = None, file_id: int = None, volume: int = 0, db: Session = Depends(db_engine.get_db)):
+async def volume(token: str = None, request_id: int = None, audio_volume: int = 0,
+                 db: Session = Depends(db_engine.get_db)):
     # check user auth
     c_token = FakeToken()
     user = await c_token.reveal_token(token)
     if not user:
         raise HTTPException(status_code=400, detail="token not valid")
     # check record
-    audio_record = db.query(models.Audio).filter(models.Audio.id == file_id).first()
+    audio_record = db.query(models.Audio).filter(models.Audio.id == request_id).first()
     if not audio_record:
-        return {"message": f"can't find file by given id{file_id}"}
+        return {"message": f"can't find file by given id{request_id}"}
     # check user privilege
     if audio_record.user_id != user.id:
         return {"message": f"current user can't access this file"}
@@ -139,8 +143,8 @@ async def volume(token: str = None, file_id: int = None, volume: int = 0, db: Se
     audio_name = audio_record.file_name
     audio_type = audio_record.file_type
     audio_engine = au.get_audio_engine(audio_record.file_path)
-    adjust_path = audio_engine.adjust_volume(volume)
-    adjust_name = audio_name[:len(audio_name)-len(audio_type)] + str(volume) + "." + audio_type
+    adjust_path = audio_engine.adjust_volume(audio_volume)
+    adjust_name = audio_name[:len(audio_name)-len(audio_type)] + str(audio_volume) + "." + audio_type
     logger.info(adjust_name)
     logger.info(f"message: path is {adjust_path}")
     return FileResponse(path=adjust_path,

@@ -1,12 +1,11 @@
-import sys
-
 import pytest
 
 from utils.audio_utils import AudioEngine, AudioType, get_audio_engine
+from utils.general_utils import clean_temp
 
 
 def test_subclass():
-    audio_path = 'test./02. Rain.flac'
+    audio_path = './test/02. Rain.flac'
     from utils.audio_utils import AudioEngine, AudioType
     cls = AudioEngine(audio_path)
     scls = cls.SUBCLASSES.get(AudioType(cls.file_type))
@@ -17,9 +16,18 @@ def test_subclass():
 
 
 def test_get_audio_engine():
-    audio_path = 'test./02. Rain.flac'
-    engine = get_audio_engine(audio_path)
-    assert engine.file_path == audio_path
-    assert engine._audio_type == AudioType('flac')
+    audio_path = './test/02. Rain.flac'
+    audio_engine = get_audio_engine(audio_path)
+    assert audio_engine.file_path == audio_path
+    assert audio_engine._audio_type == AudioType('flac')
 
 
+def test_volume_adjust():
+    audio_path = 'test_audio.flac'
+    org_audio = get_audio_engine(audio_path)
+    org_dbfs = org_audio.dbfs
+    adjusted_path = org_audio.adjust_volume(-3)
+    adjust_audio = get_audio_engine(adjusted_path)
+    adjust_dbfs = adjust_audio.dbfs
+    assert round(adjust_dbfs, 2) == round(org_dbfs - 3, 2)
+    clean_temp(adjusted_path)

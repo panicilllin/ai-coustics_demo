@@ -1,4 +1,6 @@
 import abc
+import sqlite3
+import traceback
 from typing import *
 from enum import Enum
 from sqlalchemy import create_engine
@@ -25,8 +27,9 @@ class DBEngine(metaclass=abc.ABCMeta):
     _db_type = None
     SUBCLASSES = {}
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        self.connect_info = {}
+        self.engine = None
 
     def __init_subclass__(cls, **kwargs):
         """
@@ -38,6 +41,12 @@ class DBEngine(metaclass=abc.ABCMeta):
     def get_db(self):
         pass
 
+    def get_conn(self):
+        pass
+
+    def test_conn(self):
+        pass
+
 
 class SQLiteEngine(DBEngine):
     _db_type = DBType('sqlite')
@@ -46,8 +55,12 @@ class SQLiteEngine(DBEngine):
         super().__init__()
         logger.info(f"initial sqlite")
         self.inited = True
-        database_url = database_url if database_url else config_db_connection.get("database_url", None)
-        self.engine = create_engine(database_url, connect_args={"check_same_thread": False})
+        self.database_url = database_url  # if database_url else config_db_connection.get('database_url', None)
+        self.connect_info[database_url] = self.database_url
+        logger.info(self.connect_info)
+        if not self.database_url:
+            raise
+        self.engine = create_engine(url=self.database_url, connect_args={"check_same_thread": False})
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 
     def get_db(self):
@@ -57,6 +70,19 @@ class SQLiteEngine(DBEngine):
             yield db
         finally:
             db.close()
+
+    def get_conn(self):
+        _conn = sqlite3.connect(self.database_url)
+        return _conn
+
+    def test_conn(self) -> bool:
+        try:
+            conn = self.get_conn()
+            conn.cursor()
+            return True
+        except Exception as e:
+            logger.info(e)
+            return False
 
 
 class AsyncSQLiteEngine(DBEngine):
@@ -88,12 +114,24 @@ class MysqlEngine(DBEngine):
     pass
 
 
-def get_db_engine() -> DBEngine or None:
-    _cls = DBEngine()
-    _scls = _cls.SUBCLASSES.get(DBType(config_db_engine))
-    instance = _scls(database_url=config_db_connection.get("database_url", None))
-    logger.info(f"db_instance={instance}")
-    return instance
+def get_db_engine(**kwargs) -> DBEngine:
+    try:
+        _cls = DBEngine()
+        _scls = _cls.SUBCLASSES.get(DBType(config_db_engine))
+        # try getting connect url
+        database_url = kwargs.get('database_url', None)
+        if not database_url:
+            database_url = config_db_connection.get("database_url", None)
+        if not database_url:
+            raise
+        # database_url = kwargs.get('database_url', config_db_connection.get("database_url", None))
+        instance = _scls(database_url=database_url)
+        logger.info(f"db_instance={instance}")
+        return instance
+    except Exception as e:
+        logger.error(traceback.format_exc())
+        logger.error(e)
+        raise e
 
 
 if __name__ == "__main__":
