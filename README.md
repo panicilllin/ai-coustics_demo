@@ -112,13 +112,13 @@ docker run -itd --name backend -p 8000:8000 -v ./storage:/backend/storage audio_
 open browser, typing:
 http://127.0.0.1:8000/docs#
 
-- /api/user/create      create user
-- /api/user/login       login and get a fake token for other request
-- /api/audio/upload     use token upload a audio file 
-- /api/audio/list       all audio file for one user, can get the request_id of each file
-- /api/audio/download   audio file by given request_id of the audio file
-- /api/audio/volume     adjust audio volume and download by given request_id volume, volume could be positive and negetive
-- /ping                 health check
+- /api/user/create      ::  create user
+- /api/user/login       ::  login and get a fake token for other request
+- /api/audio/upload     ::  use token upload a audio file 
+- /api/audio/list       ::  all audio file for one user, can get the request_id of each file
+- /api/audio/download   ::  audio file by given request_id of the audio file
+- /api/audio/volume     ::  adjust audio volume and download by given request_id volume, volume could be positive and negetive
+- /ping                 ::  health check
 
 ### TODO
 
