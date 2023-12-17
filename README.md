@@ -122,6 +122,6 @@ http://127.0.0.1:8000/docs#
 
 ### TODO
 
-- test case fillup
+[//]: # (- test case fillup)
 - response code fillup
 - fake token into real token
