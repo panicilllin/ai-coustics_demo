@@ -3,9 +3,9 @@
 env = 'test'
 
 if env == 'dev':
-    config_audio_path = "/Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/storage"
-    config_temp_path = "/Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/temp"
-    config_log_path = "/Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/logs"
+    config_audio_path = "/Users/***/Library/**/ai-coustics/storage"
+    config_temp_path = "/Users/***/Library/**/ai-coustics/temp"
+    config_log_path = "/Users/***/Library/**/ai-coustics/logs"
     config_db_engine = "sqlite"
     config_db_connection = {
         "database_url": "sqlite:///audio.db"
@@ -19,12 +19,12 @@ elif env == 'docker':
         "database_url": "sqlite:////backend/audio.db"
     }
 elif env == 'test':
-    config_audio_path = "/Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/storage"
-    config_temp_path = "/Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/temp"
-    config_log_path = "/Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/logs"
+    config_audio_path = "/Users/***/Library/**/ai-coustics/storage"
+    config_temp_path = "/Users/***/Library/**/ai-coustics/temp"
+    config_log_path = "/Users/***/Library/**/ai-coustics/logs"
     config_db_engine = "sqlite"
     config_db_connection = {
-        "database_url": "sqlite://///Users/andysun/Library/CloudStorage/OneDrive-Personal/Code/Python/ai-coustics/test/test.db"
+        "database_url": "sqlite://///Users/***/Library/**/ai-coustics/test/test.db"
     }
 else:
     config_audio_path = "./storage"
