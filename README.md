@@ -74,13 +74,15 @@ Ensure the repository includes the Dockerfile, API code, OpenAPI specification, 
 ai-coustics
 
   - api                     
-    - audio.py            api route for audio upload/download/list/adjust volume
-    - user.py             api route for user create/login
+    - audio.py
+      api route for audio upload/download/list/adjust volume
+    - user.py
+      api route for user create/login
 
   - model
-    - database.py         method for database connection and tools related to database
-    - models.py           sqlalchemy models
-    - schemas.py          pydantic models, not in use
+    - database.py ::      method for database connection and tools related to database
+    - models.py ::        sqlalchemy models
+    - schemas.py ::       pydantic models, not in use
   
   - utils
     - audio_utils.py      method for audio volume adjust and tools related to audio
