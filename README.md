@@ -74,26 +74,26 @@ Ensure the repository includes the Dockerfile, API code, OpenAPI specification, 
 ai-coustics
 
   - api/                     
-    - audio.py  ::  api route for audio upload/download/list/adjust volume
-    - user.py  ::  api route for user create/login
+    - audio.py          ::  api route for audio upload/download/list/adjust volume
+    - user.py           ::  api route for user create/login
 
   - model/
-    - database.py ::      method for database connection and tools related to database
-    - models.py ::        sqlalchemy models
-    - schemas.py ::       pydantic models, not in use
+    - database.py       ::  method for database connection and tools related to database
+    - models.py         ::  sqlalchemy models
+    - schemas.py        ::  pydantic models, not in use
   
   - utils/
-    - audio_utils.py  ::    method for audio volume adjust and tools related to audio
-    - user_utils.py  ::     method for about encrypt and token
+    - audio_utils.py    ::  method for audio volume adjust and tools related to audio
+    - user_utils.py     ::  method for about encrypt and token
     - general_utils.py  ::  other method
 
-  - test/  ::                thst file for this project
-  - logs/  ::                logs folder, empty while not running
-  - temp/  ::                path for temp file, should be empty all time
-  - storage/  ::             audio file storage path, you can put this path out of container
+  - test/               ::  thst file for this project
+  - logs/               ::  logs folder, empty while not running
+  - temp/               ::  path for temp file, should be empty all time
+  - storage/            ::  audio file storage path, you can put this path out of container
 
-  - main.py  ::             entrance of this project
-  - config.py  ::           config file of this project
+  - main.py             ::  entrance of this project
+  - config.py           ::  config file of this project
   - requirements.txt
   - Dockerfile
   
