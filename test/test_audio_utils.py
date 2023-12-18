@@ -1,6 +1,6 @@
 import pytest
 
-from utils.audio_utils import AudioEngine, AudioType, get_audio_engine
+from utils.audio_utils import AudioType, get_audio_engine
 from utils.general_utils import clean_temp
 
 

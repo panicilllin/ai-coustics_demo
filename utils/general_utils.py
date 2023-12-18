@@ -6,6 +6,7 @@ from tempfile import mkdtemp
 
 from config import config_audio_path, config_temp_path
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,10 +55,10 @@ def generate_temp_path(file_name: str) -> str:
     return temp_path
 
 
-def clean_temp(tmp_file_path:str) -> bool:
+def clean_temp(tmp_file_path: str) -> bool:
     """
     remove temp file and dir
-    :param tmp_file_path: file path gonna remove
+    :param tmp_file_path: file path goning to remove
     :return:
     """
     # remove tmp file

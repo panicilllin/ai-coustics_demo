@@ -2,8 +2,6 @@ import sys
 
 import pytest
 
-from config import config_db_connection
-from model import models
 from model.database import DBEngine, DBType, get_db_engine
 
 

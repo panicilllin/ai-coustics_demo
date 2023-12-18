@@ -54,4 +54,5 @@ logging.getLogger().addHandler(console)
 # Health Check
 @app.get("/ping")
 async def ping():
+    logger.info(f"pinging the server")
     return {"message": f"pong! {datetime.datetime.now()}"}

@@ -1,9 +1,12 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP
+from sqlalchemy import Column, ForeignKey, Integer, String, TIMESTAMP
 from model.database import Base
 from sqlalchemy.sql import func
 
 
 class User(Base):
+    """
+    user table
+    """
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String, nullable=False, unique=True)
@@ -11,6 +14,9 @@ class User(Base):
 
 
 class Audio(Base):
+    """
+    audio file table
+    """
     __tablename__ = "audio_files"
     id = Column(Integer, primary_key=True, index=True)
     file_name = Column(String, nullable=False)

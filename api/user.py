@@ -1,4 +1,4 @@
-import model.schemas as schemas, model.models as models
+import model.models as models
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter
 from config import config_token_valid_time
@@ -15,8 +15,15 @@ db_engine = get_db_engine()
 
 @router.post("/create", status_code=status.HTTP_200_OK)
 async def create_account(user_name: str, password: str, db: Session = Depends(db_engine.get_db)):
+    """
+    creat user accound
+    :param user_name:
+    :param password:
+    :param db: database session
+    :return: json
+    """
     if await get_user(user_name):
-        return {"message": f"this user name already exist"}
+        raise HTTPException(status_code=400, detail="this user name already exist")
     hasher = Hasher()
     user_record = models.User()
     user_record.user_name = user_name
@@ -29,11 +36,17 @@ async def create_account(user_name: str, password: str, db: Session = Depends(db
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login(user_name: str, password: str):
+    """
+    login with username and password
+    :param user_name:
+    :param password:
+    :return: fake token for other api usage
+    """
     if not user_name and password:
-        return {"message": f"user name or password not given"}
+        raise HTTPException(status_code=400, detail="user name or password not given")
     user = await get_user(user_name)
     if not user:
-        return {"message": f"user not exist"}
+        raise HTTPException(status_code=400, detail="user not exist")
 
     # hasher = Hasher()
     if not await auth_user(user_name, password):
@@ -46,6 +59,11 @@ async def login(user_name: str, password: str):
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout(token: str):
+    """
+    Not yet implemented
+    :param token: user token
+    :return: json
+    """
     c_token = FakeToken()
     c_token.invalid_token(token)
     return {"message": f"try pretend you're log out"}

@@ -10,10 +10,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class AudioType(str, Enum):
+class AudioType(Enum):
     mp3 = "mp3"
     flac = "flac"
     wav = "wav"
+    exception = None
+
+    @classmethod
+    def _missing_(cls, name):
+        return cls.exception
 
 
 class AudioEngine(metaclass=abc.ABCMeta):
@@ -30,7 +35,8 @@ class AudioEngine(metaclass=abc.ABCMeta):
         self.file_name = os.path.basename(file_path)
         self.file_path = file_path
         self.file_md5 = generate_md5(self.file_path)  # check md5 to reduce duplicate files
-        self.file_type = AudioType(self.file_name.split('.')[-1].lower())
+        # self.file_type = AudioType(self.file_name.split('.')[-1].lower())
+        # self.file_type = self.check_file_type()
         # user: User  # user who upload this file
 
     def __init_subclass__(cls, **kwargs):
@@ -40,12 +46,17 @@ class AudioEngine(metaclass=abc.ABCMeta):
         super().__init_subclass__(**kwargs)
         cls.SUBCLASSES[cls._audio_type] = cls
 
-    @classmethod
-    def create(cls, audio_type, params):
-        if audio_type not in cls.subclasses:
-            raise ValueError(f'Bad audio type {audio_type}')
+    # @classmethod
+    # def create(cls, audio_type, params):
+    #     if audio_type not in cls.subclasses:
+    #         raise ValueError(f'Bad audio type {audio_type}')
+    #     return cls.subclasses[audio_type](params)
 
-        return cls.subclasses[audio_type](params)
+    @property
+    def file_type(self):
+        file_type = self.file_name.split('.')[-1].lower()
+        audio_type = AudioType(file_type)
+        return audio_type
 
     def adjust_volume(self, volume: int):
         pass

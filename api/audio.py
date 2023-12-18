@@ -24,11 +24,23 @@ db_engine = get_db_engine()
 
 @router.post("/upload")
 async def upload(token: str = None, file: UploadFile = File(...), db: Session = Depends(db_engine.get_db)):
+    """
+    upload audio file
+    :param token: user token
+    :param file: audio file
+    :param db: database session
+    :return: response
+    """
+    # auth
+    c_token = FakeToken()
+    if not c_token.check_valid(token):
+        raise HTTPException(status_code=498, detail="Token Expired")
+    user = await c_token.reveal_token(token)
+    if not user:
+        raise HTTPException(status_code=498, detail="Token Invalid")
+    if au.AudioType(file.filename.split('.')[-1]) == au.AudioType.exception:
+        raise HTTPException(status_code=415, detail="file Type not Support")
     try:
-        c_token = FakeToken()
-        user = await c_token.reveal_token(token)
-        if not user:
-            raise HTTPException(status_code=400, detail="token not valid")
         contents = file.file.read()
         with tempfile.TemporaryDirectory(dir=config_temp_path) as temp:
             temp_path = os.path.join(temp, file.filename)
@@ -68,7 +80,7 @@ async def upload(token: str = None, file: UploadFile = File(...), db: Session = 
     except Exception as e:
         logger.error(traceback.format_exc())
         logger.error(f"error message{e}")
-        return {"message": f"Error occured wile uploading {e}"}
+        raise HTTPException(status_code=500, detail=f"Error occured wile uploading {e}")
     finally:
         file.file.close()
     return {"message": f"Upload file {file.filename} success",
@@ -79,11 +91,19 @@ async def upload(token: str = None, file: UploadFile = File(...), db: Session = 
 
 @router.get("/list")
 async def list_audio(token: str = None, db: Session = Depends(db_engine.get_db)):
+    """
+    list all file by one user
+    :param token: user token
+    :param db: database session
+    :return: list of files
+    """
     # check user auth
     c_token = FakeToken()
+    if not c_token.check_valid(token):
+        raise HTTPException(status_code=498, detail="Token Expired")
     user = await c_token.reveal_token(token)
     if not user:
-        raise HTTPException(status_code=400, detail="token not valid")
+        raise HTTPException(status_code=498, detail="Token Invalid")
     audio_records = db.query(models.Audio).filter(models.Audio.user_id == user.id).all()
     print(audio_records)
     retuen_records = []
@@ -100,11 +120,21 @@ async def list_audio(token: str = None, db: Session = Depends(db_engine.get_db))
 
 @router.get("/download")
 async def download(token: str = None, request_id: int = None, db: Session = Depends(db_engine.get_db)):
+    """
+    download file by given requist id
+    :param token: user token
+    :param request_id: file id
+    :param db: database session
+    :return: File
+    """
     # check user auth
     c_token = FakeToken()
+    if not c_token.check_valid(token):
+        raise HTTPException(status_code=498, detail="Token Expired")
     user = await c_token.reveal_token(token)
     if not user:
-        raise HTTPException(status_code=400, detail="token not valid")
+        raise HTTPException(status_code=498, detail="Token Invalid")
+
     # check record
     audio_record = db.query(models.Audio).filter(models.Audio.id == request_id).first()
     if not audio_record:
@@ -124,11 +154,19 @@ async def download(token: str = None, request_id: int = None, db: Session = Depe
 @router.get("/volume")
 async def volume(token: str = None, request_id: int = None, audio_volume: int = 0,
                  db: Session = Depends(db_engine.get_db)):
+    """
+    adjust volume and download
+    :param token: use token
+    :param request_id: audio file id
+    :param audio_volume: dbfs you want to put, could be negetive
+    :param db: database session
+    :return: adjusted audio File
+    """
     # check user auth
     c_token = FakeToken()
     user = await c_token.reveal_token(token)
     if not user:
-        raise HTTPException(status_code=400, detail="token not valid")
+        raise HTTPException(status_code=498, detail="Token Invalid")
     # check record
     audio_record = db.query(models.Audio).filter(models.Audio.id == request_id).first()
     if not audio_record:
@@ -151,4 +189,3 @@ async def volume(token: str = None, request_id: int = None, audio_volume: int = 
                         filename=adjust_name,
                         media_type=f'audio/{audio_type}',
                         background=BackgroundTask(au.clean_temp, adjust_path))
-
