@@ -65,9 +65,9 @@ def test_audio_get():
 
 def test_audio_volume():
     audio_path = "./test_audio.flac"
-    adjust_path = "./test_audio_download.flac"
+    adjust_path = "./test_audio_adjust.flac"
     clean_temp(adjust_path)
-    response = client.get("/api/audio/download",
+    response = client.get("/api/audio/volume",
                           params={"token": "tester_token123", "request_id": "1", "audio_volume": "-5"}
                           )
     print(f"\n{response}")
@@ -79,5 +79,5 @@ def test_audio_volume():
     adjust_audio = get_audio_engine(adjust_path)
     org_dbfs = org_audio.dbfs
     adjust_dbfs = adjust_audio.dbfs
-    assert round(adjust_dbfs, 2) == round(org_dbfs, 2)
+    assert round(adjust_dbfs, 2) == round(org_dbfs - 5, 2)
     clean_temp(adjust_path)
