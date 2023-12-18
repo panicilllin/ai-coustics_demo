@@ -3,36 +3,20 @@
 env = 'test'
 
 if env == 'dev':
-    config_audio_path = "/Users/***/Library/**/ai-coustics/storage"
-    config_temp_path = "/Users/***/Library/**/ai-coustics/temp"
-    config_log_path = "/Users/***/Library/**/ai-coustics/logs"
-    config_db_engine = "sqlite"
-    config_db_connection = {
-        "database_url": "sqlite:///audio.db"
-    }
+    base_path = "/Users/***/Library/**/ai-coustics"
 elif env == 'docker':
-    config_audio_path = "/backend/storage"
-    config_temp_path = "/backend/temp"
-    config_log_path = "/backend/logs"
-    config_db_engine = "sqlite"
-    config_db_connection = {
-        "database_url": "sqlite:////backend/audio.db"
-    }
+    base_path = "/backend"
 elif env == 'test':
-    config_audio_path = "/Users/***/Library/**/ai-coustics/storage"
-    config_temp_path = "/Users/***/Library/**/ai-coustics/temp"
-    config_log_path = "/Users/***/Library/**/ai-coustics/logs"
-    config_db_engine = "sqlite"
-    config_db_connection = {
-        "database_url": "sqlite://///Users/***/Library/**/ai-coustics/test/test.db"
-    }
+    base_path = "/Users/***/Library/**/ai-coustics"
 else:
-    config_audio_path = "./storage"
-    config_temp_path = "./temp"
-    config_log_path = "./logs"
-    config_db_engine = "sqlite"
-    config_db_connection = {
-        "database_url": "sqlite:///./audio.db"
-    }
+    base_path = "."
+
+config_audio_path = f"{base_path}/storage"
+config_temp_path = f"{base_path}/temp"
+config_log_path = f"{base_path}/logs"
+config_db_engine = "sqlite"
+config_db_connection = {
+    "database_url": f"sqlite:///{base_path}/test/test.db"
+}
 
 config_token_valid_time = 60 * 12

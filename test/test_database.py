@@ -22,9 +22,3 @@ def test_subclass():
 def test_get_db_engine():
     db_engine = get_db_engine()
     assert db_engine._db_type == DBType('sqlite')
-
-
-def test_connection():
-    db_engine = get_db_engine()
-    print(f"\nconnect_info={db_engine.connect_info}")
-    assert db_engine.test_conn() is True

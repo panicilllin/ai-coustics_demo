@@ -109,6 +109,8 @@ docker run -itd --name backend -p 8000:8000 -v ./storage:/backend/storage audio_
 
 ### Use
 
+modify the config file, 
+change the base dir to "/backend" and choose "env=docker"
 open browser, typing:
 http://127.0.0.1:8000/docs#
 
@@ -119,6 +121,15 @@ http://127.0.0.1:8000/docs#
 - /api/audio/download   ::  audio file by given request_id of the audio file
 - /api/audio/volume     ::  adjust audio volume and download by given request_id volume, volume could be positive and negetive
 - /ping                 ::  health check
+
+
+### Unit Test
+modify the config file, 
+change the base dir to where you put the project, and choose "env=test"
+```bash
+cd ai-coustics/test/
+pytest
+```
 
 ### TODO
 
